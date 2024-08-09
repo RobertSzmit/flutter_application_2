@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11677339102",
+    "project_id": "flutter-zulawy-test",
+    "storage_bucket": "flutter-zulawy-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11677339102:android:2c33833c2b230fcb1aa14f",
+        "android_client_info": {
+          "package_name": "com.aantonkiewicz.flutter_application_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4idbprBKSleTkDZZkGEnMGYhkNAGHA50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
