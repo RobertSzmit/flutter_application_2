@@ -37,6 +37,7 @@ class RootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
+      // to nasłuchuje, czy user jest zalogowany czy nie.jak tak, to idzie do homepage
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         final user = snapshot.data;
