@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -19,42 +20,23 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Center(child: Text('LKS Żuławy Nowy Dwór Gd.')),
+      ),
       body: Builder(builder: (context) {
         if (currentIndex == 0) {
-          return const Center(
-            child: Text('Aktualności'),
-          );
+          return const NewsPageContent();
         }
         if (currentIndex == 1) {
-          return Center(
-            child: Text('Tabela'),
-          );
+          return const TablePageContent();
         }
         if (currentIndex == 2) {
-          return Center(
-            child: Text('Terminarz'),
-          );
+          return const SchedulePageContent();
         }
         if (currentIndex == 3) {
-          return Center(
-            child: Text('Czat'),
-          );
+          return const ChatPageContent();
         }
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Jesteś zalogowany jako ${widget.user.email}'),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut(); // to służy do wylogowywania
-                },
-                child: const Text('Wyloguj'),
-              ),
-            ],
-          ),
-        );
+        return MyAccountPageContent(email: widget.user.email);
       }),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
@@ -87,6 +69,122 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class MyAccountPageContent extends StatelessWidget {
+  const MyAccountPageContent({
+    super.key,
+    required this.email,
+  });
+
+  final String? email;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Jesteś zalogowany jako $email'),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut(); // to służy do wylogowywania
+            },
+            child: const Text('Wyloguj'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ChatPageContent extends StatelessWidget {
+  const ChatPageContent({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Czat'),
+    );
+  }
+}
+
+class SchedulePageContent extends StatelessWidget {
+  const SchedulePageContent({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Terminarz'),
+    );
+  }
+}
+
+class TablePageContent extends StatelessWidget {
+  const TablePageContent({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Tabela'),
+    );
+  }
+}
+
+class NewsPageContent extends StatelessWidget {
+  const NewsPageContent({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance.collection('news').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Coś poszło nie tak'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: Text('Ładowanie'));
+        }
+        final documents = snapshot.data!.docs;
+
+        return ListView(
+          children: [
+            for (final document in documents) ...[
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Card(
+                  child: ListTile(
+                    leading: document['image_url'] != null
+                        ? Image.network(
+                            document['image_url'],
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.error);
+                            },
+                          )
+                        : const SizedBox(width: 50, height: 50),
+                    title: Text(document['news_title']),
+                    subtitle: Text(document['news_content']),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
