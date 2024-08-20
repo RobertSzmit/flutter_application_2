@@ -88,7 +88,14 @@ class _ChatPageContentState extends State<ChatPageContent> {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: _sendMessage,
+                  onPressed: _message.isEmpty
+                      ? null
+                      : () {
+                          FirebaseFirestore.instance.collection('chat').add({
+                            'message': _message,
+                            'timestamp': FieldValue.serverTimestamp(),
+                          });
+                        },
                   child: const Text('Wyślij'),
                 ),
               ],
