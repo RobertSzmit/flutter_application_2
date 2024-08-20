@@ -24,9 +24,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      // title: const Center(child: Text('LKS Żuławy Nowy Dwór Gd.')),
-      // ),
       body: Builder(builder: (context) {
         if (currentIndex == 0) {
           return const NewsPageContent();
