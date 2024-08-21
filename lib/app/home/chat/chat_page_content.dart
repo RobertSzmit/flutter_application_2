@@ -11,17 +11,22 @@ class ChatPageContent extends StatefulWidget {
 }
 
 class _ChatPageContentState extends State<ChatPageContent> {
-  String _message = '';
+  final TextEditingController _messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
 
   void _sendMessage() {
-    if (_message.isNotEmpty) {
+    final message = _messageController.text.trim();
+    if (message.isNotEmpty) {
       FirebaseFirestore.instance.collection('chat').add({
-        'message': _message,
+        'message': message,
         'timestamp': FieldValue.serverTimestamp(),
       });
-      setState(() {
-        _message = '';
-      });
+      _messageController.clear();
     }
   }
 
@@ -74,29 +79,24 @@ class _ChatPageContentState extends State<ChatPageContent> {
               children: [
                 Expanded(
                   child: TextField(
+                    controller: _messageController,
                     decoration: const InputDecoration(
                       hintText: 'Wpisz wiadomość',
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        _message = value;
-                      });
-                    },
                     onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _message.isEmpty
-                      ? null
-                      : () {
-                          FirebaseFirestore.instance.collection('chat').add({
-                            'message': _message,
-                            'timestamp': FieldValue.serverTimestamp(),
-                          });
-                        },
-                  child: const Text('Wyślij'),
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _messageController,
+                  builder: (context, value, child) {
+                    return ElevatedButton(
+                      onPressed:
+                          value.text.trim().isEmpty ? null : _sendMessage,
+                      child: const Text('Wyślij'),
+                    );
+                  },
                 ),
               ],
             ),
