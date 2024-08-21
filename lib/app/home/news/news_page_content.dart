@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/app/home/news/news_widget_content.dart';
 import 'banner_row_widget.dart';
 
 class NewsPageContent extends StatelessWidget {
@@ -73,47 +74,7 @@ class NewsPageContent extends StatelessWidget {
             ),
           ),
           // ListView z newsami
-          Expanded(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: FirebaseFirestore.instance.collection('news').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Center(child: Text('Coś poszło nie tak'));
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: Text('Ładowanie'));
-                }
-                final documents = snapshot.data!.docs;
-
-                return ListView(
-                  children: [
-                    for (final document in documents) ...[
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Card(
-                          child: ListTile(
-                            leading: document['image_url'] != null
-                                ? Image.network(
-                                    document['image_url'],
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Icon(Icons.error);
-                                    },
-                                  )
-                                : const SizedBox(width: 50, height: 50),
-                            title: Text(document['news_title']),
-                            subtitle: Text(document['news_content']),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                );
-              },
-            ),
-          ),
+          const NewsWidget(),
         ],
       ),
     );
