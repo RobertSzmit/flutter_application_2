@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/app/home/chat/chat_page_content.dart';
-import 'package:flutter_application_2/app/home/my_account/my_account_page_content.dart';
-import 'package:flutter_application_2/app/home/news/news_page_content.dart';
-import 'package:flutter_application_2/app/home/schedule/schedule_page_content.dart';
-import 'package:flutter_application_2/app/home/table/table_page_content.dart';
+import 'package:flutter_application_2/app/features/home/chat/chat_page_content.dart';
+import 'package:flutter_application_2/app/features/home/my_account/my_account_page_content.dart';
+import 'package:flutter_application_2/app/features/home/news/news_page_content.dart';
+import 'package:flutter_application_2/app/features/home/schedule/schedule_page_content.dart';
+import 'package:flutter_application_2/app/features/home/table/table_page_content.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
