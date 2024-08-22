@@ -18,6 +18,11 @@ class RootCubit extends Cubit<RootState> {
 
   StreamSubscription? _streamSubscription;
 
+  Future<void> signOut() async {
+    // wylogowywanie
+    FirebaseAuth.instance.signOut();
+  }
+
   Future<void> start() async {
     emit(
       const RootState(
@@ -26,7 +31,7 @@ class RootCubit extends Cubit<RootState> {
         errorMessage: '',
       ),
     );
-    _streamSubscription =
+    _streamSubscription = // ten stream nasłuchuje czy użytkownik jest zalogowany
         FirebaseAuth.instance.authStateChanges().listen((user) {
       emit(
         RootState(
