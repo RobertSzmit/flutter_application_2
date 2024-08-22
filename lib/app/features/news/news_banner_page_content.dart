@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/app/features/home/news/banner_row_widget.dart';
-import 'package:flutter_application_2/app/features/home/news/news_widget_content.dart';
+import 'package:flutter_application_2/app/features/news/banner_row_widget.dart';
+import 'package:flutter_application_2/app/features/news/news_widget_content.dart';
 
 class NewsBannerPageContent extends StatelessWidget {
   const NewsBannerPageContent({

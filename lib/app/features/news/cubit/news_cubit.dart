@@ -41,7 +41,7 @@ class NewsCubit extends Cubit<NewsState> {
       ..onError((error) {
         emit(
           NewsState(
-            documents: [],
+            documents: const [],
             isLoading: false,
             errorMessage: error.toString(),
           ),

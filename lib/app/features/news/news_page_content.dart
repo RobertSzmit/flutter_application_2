@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/app/features/home/news/news_banner_page_content.dart';
+import 'package:flutter_application_2/app/features/news/news_banner_page_content.dart';
 
 class NewsPageContent extends StatelessWidget {
   const NewsPageContent({super.key});
