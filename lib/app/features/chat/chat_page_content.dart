@@ -15,7 +15,7 @@ class ChatPageContent extends StatelessWidget {
 }
 
 class _ChatPageContent extends StatefulWidget {
-  const _ChatPageContent({super.key});
+  const _ChatPageContent();
 
   @override
   _ChatPageContentState createState() => _ChatPageContentState();
