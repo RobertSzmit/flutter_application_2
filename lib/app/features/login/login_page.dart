@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({
@@ -7,8 +8,8 @@ class LoginPage extends StatefulWidget {
   });
 
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
+  final usernameController = TextEditingController(); // Nowy kontroler
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -27,12 +28,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(isCreatingAccount == true
-                  ? 'Zarejestruj się'
-                  : 'Zaloguj się'),
-              const SizedBox(
-                height: 20,
-              ),
+              Text(isCreatingAccount ? 'Zarejestruj się' : 'Zaloguj się'),
+              const SizedBox(height: 20),
               TextField(
                 controller: widget.emailController,
                 decoration: const InputDecoration(hintText: 'E-mail'),
@@ -42,30 +39,47 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: const InputDecoration(hintText: 'Hasło'),
                 obscureText: true,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              if (isCreatingAccount) ...[
+                TextField(
+                  controller: widget.usernameController,
+                  decoration:
+                      const InputDecoration(hintText: 'Nazwa użytkownika'),
+                ),
+              ],
+              const SizedBox(height: 20),
               Text(errorMessage),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  if (isCreatingAccount == true) {
-                    // rejestracja
+                  if (isCreatingAccount) {
+                    // Rejestracja
                     try {
-                      await FirebaseAuth.instance
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance
                           .createUserWithEmailAndPassword(
                         email: widget.emailController.text,
                         password: widget.passwordController.text,
                       );
+
+                      // Aktualizacja profilu użytkownika
+                      await userCredential.user
+                          ?.updateDisplayName(widget.usernameController.text);
+
+                      // Zapisz nazwę użytkownika w Firestore
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(userCredential.user?.uid)
+                          .set({
+                        'username': widget.usernameController.text,
+                        'email': widget.emailController.text,
+                      });
                     } catch (error) {
                       setState(() {
                         errorMessage = error.toString();
                       });
-                    } // treść błędu i obsługa jego stanu, który idzie wyżej do Text(errorMessage)
+                    }
                   } else {
-                    // logowanie
+                    // Logowanie
                     try {
                       await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: widget.emailController.text,
@@ -75,36 +89,24 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         errorMessage = error.toString();
                       });
-                    } // treść błędu i obsługa jego stanu, który idzie wyżej do Text(errorMessage)
+                    }
                   }
                 },
-                child: Text(isCreatingAccount == true
-                    ? 'Zarejestruj się'
-                    : 'Zaloguj się'),
+                child:
+                    Text(isCreatingAccount ? 'Zarejestruj się' : 'Zaloguj się'),
               ),
               const SizedBox(height: 20),
-              if (isCreatingAccount == false) ...[
-                // to chowa 'zaloguj sie' jak wchodzimy do rejestrowania się
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      isCreatingAccount = true;
-                    });
-                  },
-                  child: const Text('Utwórz konto'),
-                ),
-              ],
-              if (isCreatingAccount == true) ...[
-                // a to wyrzuca masz już konto
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      isCreatingAccount = false;
-                    });
-                  },
-                  child: const Text('Masz już konto?'),
-                ),
-              ],
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    isCreatingAccount = !isCreatingAccount;
+                    errorMessage =
+                        ''; // Czyścimy komunikat o błędzie przy przełączaniu
+                  });
+                },
+                child: Text(
+                    isCreatingAccount ? 'Masz już konto?' : 'Utwórz konto'),
+              ),
             ],
           ),
         ),
