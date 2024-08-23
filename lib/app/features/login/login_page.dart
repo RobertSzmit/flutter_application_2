@@ -1,115 +1,94 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_2/app/features/login/cubit/login_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginPage extends StatefulWidget {
-  LoginPage({
-    super.key,
-  });
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final usernameController = TextEditingController(); // Nowy kontroler
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  var errorMessage = '';
-  var isCreatingAccount = false;
+  final usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(isCreatingAccount ? 'Zarejestruj się' : 'Zaloguj się'),
-              const SizedBox(height: 20),
-              TextField(
-                controller: widget.emailController,
-                decoration: const InputDecoration(hintText: 'E-mail'),
-              ),
-              TextField(
-                controller: widget.passwordController,
-                decoration: const InputDecoration(hintText: 'Hasło'),
-                obscureText: true,
-              ),
-              if (isCreatingAccount) ...[
-                TextField(
-                  controller: widget.usernameController,
-                  decoration:
-                      const InputDecoration(hintText: 'Nazwa użytkownika'),
+    return BlocProvider(
+      create: (_) => LoginCubit(),
+      child: BlocConsumer<LoginCubit, LoginState>(
+        listener: (context, state) {
+          if (state is LoginFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          } else if (state is LoginSuccess) {
+            // Nawiguj do głównego ekranu po udanym logowaniu/rejestracji
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(state is LoginInitial
+                        ? 'Zaloguj się'
+                        : 'Zarejestruj się'),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: emailController,
+                      decoration: const InputDecoration(hintText: 'E-mail'),
+                    ),
+                    TextField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(hintText: 'Hasło'),
+                      obscureText: true,
+                    ),
+                    if (state is! LoginInitial) ...[
+                      TextField(
+                        controller: usernameController,
+                        decoration: const InputDecoration(
+                            hintText: 'Nazwa użytkownika'),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    if (state is LoginLoading)
+                      const CircularProgressIndicator()
+                    else
+                      ElevatedButton(
+                        onPressed: () {
+                          if (state is LoginInitial) {
+                            context.read<LoginCubit>().signIn(
+                                  emailController.text,
+                                  passwordController.text,
+                                );
+                          } else {
+                            context.read<LoginCubit>().signUp(
+                                  emailController.text,
+                                  passwordController.text,
+                                  usernameController.text,
+                                );
+                          }
+                        },
+                        child: Text(state is LoginInitial
+                            ? 'Zaloguj się'
+                            : 'Zarejestruj się'),
+                      ),
+                    const SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () {
+                        context.read<LoginCubit>().toggleCreateAccount();
+                      },
+                      child: Text(state is LoginInitial
+                          ? 'Utwórz konto'
+                          : 'Masz już konto?'),
+                    ),
+                  ],
                 ),
-              ],
-              const SizedBox(height: 20),
-              Text(errorMessage),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (isCreatingAccount) {
-                    // Rejestracja
-                    try {
-                      UserCredential userCredential = await FirebaseAuth
-                          .instance
-                          .createUserWithEmailAndPassword(
-                        email: widget.emailController.text,
-                        password: widget.passwordController.text,
-                      );
-
-                      // Aktualizacja profilu użytkownika
-                      await userCredential.user
-                          ?.updateDisplayName(widget.usernameController.text);
-
-                      // Zapisz nazwę użytkownika w Firestore
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(userCredential.user?.uid)
-                          .set({
-                        'username': widget.usernameController.text,
-                        'email': widget.emailController.text,
-                      });
-                    } catch (error) {
-                      setState(() {
-                        errorMessage = error.toString();
-                      });
-                    }
-                  } else {
-                    // Logowanie
-                    try {
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: widget.emailController.text,
-                        password: widget.passwordController.text,
-                      );
-                    } catch (error) {
-                      setState(() {
-                        errorMessage = error.toString();
-                      });
-                    }
-                  }
-                },
-                child:
-                    Text(isCreatingAccount ? 'Zarejestruj się' : 'Zaloguj się'),
               ),
-              const SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    isCreatingAccount = !isCreatingAccount;
-                    errorMessage =
-                        ''; // Czyścimy komunikat o błędzie przy przełączaniu
-                  });
-                },
-                child: Text(
-                    isCreatingAccount ? 'Masz już konto?' : 'Utwórz konto'),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
