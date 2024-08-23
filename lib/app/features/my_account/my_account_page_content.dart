@@ -1,62 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/app/cubit/root_cubit.dart';
+import 'package:flutter_application_2/app/features/my_account/cubit/my_account_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyAccountPageContent extends StatelessWidget {
-  const MyAccountPageContent({
-    super.key,
-    required this.email,
-  });
-
-  final String? email;
+  const MyAccountPageContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FutureBuilder<String?>(
-            future: _getUsernameFromFirestore(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
-              final username = snapshot.data ?? 'Nieznany użytkownik';
-              return Column(
+    return BlocProvider(
+      create: (_) => MyAccountCubit()..loadUserData(),
+      child: BlocBuilder<MyAccountCubit, MyAccountState>(
+        builder: (context, state) {
+          if (state is MyAccountLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is MyAccountLoaded) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Witaj, $username!'),
+                  Text('Witaj, ${state.username}!'),
                   const SizedBox(height: 10),
-                  Text('Jesteś zalogowany jako $email'),
+                  Text('Jesteś zalogowany jako ${state.email}'),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<MyAccountCubit>().signOut();
+                    },
+                    child: const Text('Wyloguj'),
+                  ),
                 ],
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              context.read<RootCubit>().signOut();
-            },
-            child: const Text('Wyloguj'),
-          ),
-        ],
+              ),
+            );
+          } else if (state is MyAccountError) {
+            return Center(child: Text(state.message));
+          } else if (state is MyAccountSignedOut) {
+            // Navigate to login page or show a message
+            return const Center(child: Text('Wylogowano'));
+          }
+          return const Center(child: Text('Nieznany stan'));
+        },
       ),
     );
-  }
-
-  Future<String?> _getUsernameFromFirestore() async {
-    try {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
-      if (uid != null) {
-        final doc =
-            await FirebaseFirestore.instance.collection('users').doc(uid).get();
-        return doc.data()?['username'] as String?;
-      }
-    } catch (e) {
-      print('Błąd podczas pobierania nazwy użytkownika z Firestore: $e');
-    }
-    return null;
   }
 }
