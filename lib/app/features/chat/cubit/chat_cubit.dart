@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 part 'chat_state.dart';
@@ -17,6 +17,8 @@ class ChatCubit extends Cubit<ChatState> {
         );
 
   StreamSubscription? _streamSubscription;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> start() async {
     emit(
@@ -27,7 +29,7 @@ class ChatCubit extends Cubit<ChatState> {
       ),
     );
 
-    _streamSubscription = FirebaseFirestore.instance
+    _streamSubscription = _firestore
         .collection('chat')
         .orderBy('timestamp', descending: true)
         .snapshots()
@@ -54,10 +56,18 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> sendMessage(String message) async {
     if (message.isNotEmpty) {
       try {
-        await FirebaseFirestore.instance.collection('chat').add({
-          'message': message,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
+        final user = _auth.currentUser;
+        if (user != null) {
+          final userDoc = await _firestore.collection('users').doc(user.uid).get();
+          final username = userDoc.data()?['username'] as String? ?? 'Nieznany użytkownik';
+
+          await _firestore.collection('chat').add({
+            'message': message,
+            'timestamp': FieldValue.serverTimestamp(),
+            'userId': user.uid,
+            'username': username,
+          });
+        }
       } catch (e) {
         emit(
           ChatState(

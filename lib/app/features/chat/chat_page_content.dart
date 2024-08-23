@@ -59,14 +59,28 @@ class _ChatPageContentState extends State<_ChatPageContent> {
                   reverse: true,
                   itemCount: state.messages.length,
                   itemBuilder: (context, index) {
-                    final message = state.messages[index]['message'] as String;
+                    final messageData = state.messages[index].data();
+                    final message = messageData['message'] as String;
+                    final username = messageData['username'] as String? ??
+                        'Nieznany użytkownik';
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 4, horizontal: 8),
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(message),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                username,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(message),
+                            ],
+                          ),
                         ),
                       ),
                     );
