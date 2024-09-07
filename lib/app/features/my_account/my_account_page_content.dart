@@ -3,7 +3,7 @@ import 'package:flutter_application_2/app/features/my_account/cubit/my_account_c
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyAccountPageContent extends StatelessWidget {
-  const MyAccountPageContent({super.key, String? email});
+  const MyAccountPageContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,16 +11,18 @@ class MyAccountPageContent extends StatelessWidget {
       create: (_) => MyAccountCubit()..loadUserData(),
       child: BlocBuilder<MyAccountCubit, MyAccountState>(
         builder: (context, state) {
-          if (state is MyAccountLoading) {
+          if (state.isLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is MyAccountLoaded) {
+          } else if (state.userItem != null) {
+            final user = state.userItem!;
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Witaj, ${state.username}!'),
+                  Text('Witaj, ${user.username}!'),
                   const SizedBox(height: 10),
-                  Text('Jesteś zalogowany jako ${state.email}'),
+                  if (user.email != null)
+                    Text('Jesteś zalogowany jako ${user.email}'),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
@@ -31,11 +33,8 @@ class MyAccountPageContent extends StatelessWidget {
                 ],
               ),
             );
-          } else if (state is MyAccountError) {
-            return Center(child: Text(state.message));
-          } else if (state is MyAccountSignedOut) {
-            // Navigate to login page or show a message
-            return const Center(child: Text('Wylogowano'));
+          } else if (state.errorMessage.isNotEmpty) {
+            return Center(child: Text(state.errorMessage));
           }
           return const Center(child: Text('Nieznany stan'));
         },

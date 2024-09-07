@@ -1,22 +1,14 @@
 part of 'my_account_cubit.dart';
 
-abstract class MyAccountState {}
+@immutable
+class MyAccountState {
+  final UserItem? userItem;
+  final bool isLoading;
+  final String errorMessage;
 
-class MyAccountInitial extends MyAccountState {}
-
-class MyAccountLoading extends MyAccountState {}
-
-class MyAccountLoaded extends MyAccountState {
-  final String username;
-  final String? email;
-
-  MyAccountLoaded({required this.username, this.email});
+  const MyAccountState({
+    this.userItem,
+    required this.isLoading,
+    required this.errorMessage,
+  });
 }
-
-class MyAccountError extends MyAccountState {
-  final String message;
-
-  MyAccountError(this.message);
-}
-
-class MyAccountSignedOut extends MyAccountState {}

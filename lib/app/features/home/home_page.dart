@@ -31,14 +31,13 @@ class _HomePageState extends State<HomePage> {
         if (currentIndex == 1) {
           return const TablePageContent();
         }
-
         if (currentIndex == 2) {
           return const SchedulePageContent();
         }
         if (currentIndex == 3) {
           return const ChatPageContent();
         }
-        return MyAccountPageContent(email: widget.user.email);
+        return const MyAccountPageContent(); // Zmiana tutaj
       }),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,

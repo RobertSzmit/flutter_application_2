@@ -3,93 +3,98 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_2/app/features/login/cubit/login_cubit.dart';
 
 class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final usernameController = TextEditingController();
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => LoginCubit(),
-      child: BlocConsumer<LoginCubit, LoginState>(
-        listener: (context, state) {
-          if (state is LoginFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
-          } else if (state is LoginSuccess) {
-            // Nawiguj do głównego ekranu po udanym logowaniu/rejestracji
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(40.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(state is SignUpInitial
-                        ? 'Zarejestruj się'
-                        : 'Zaloguj się'),
-                    const SizedBox(height: 20),
+      create: (context) => LoginCubit(),
+      child: const LoginPageContent(),
+    );
+  }
+}
+
+class LoginPageContent extends StatelessWidget {
+  const LoginPageContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+    final usernameController = TextEditingController();
+
+    return BlocConsumer<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if (state.errorMessage.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage)),
+          );
+        }
+        // Usuńmy stąd nawigację, ponieważ RootPage zajmie się zmianą widoku po zalogowaniu
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title:
+                Text(state.isCreateAccount ? 'Zarejestruj się' : 'Zaloguj się'),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    controller: emailController,
+                    decoration: const InputDecoration(hintText: 'E-mail'),
+                  ),
+                  TextField(
+                    controller: passwordController,
+                    decoration: const InputDecoration(hintText: 'Hasło'),
+                    obscureText: true,
+                  ),
+                  if (state.isCreateAccount)
                     TextField(
-                      controller: emailController,
-                      decoration: const InputDecoration(hintText: 'E-mail'),
+                      controller: usernameController,
+                      decoration:
+                          const InputDecoration(hintText: 'Nazwa użytkownika'),
                     ),
-                    TextField(
-                      controller: passwordController,
-                      decoration: const InputDecoration(hintText: 'Hasło'),
-                      obscureText: true,
-                    ),
-                    if (state is SignUpInitial) ...[
-                      TextField(
-                        controller: usernameController,
-                        decoration: const InputDecoration(
-                            hintText: 'Nazwa użytkownika'),
-                      ),
-                    ],
-                    const SizedBox(height: 20),
-                    if (state is LoginLoading)
-                      const CircularProgressIndicator()
-                    else
-                      ElevatedButton(
-                        onPressed: () {
-                          if (state is LoginInitial) {
-                            context.read<LoginCubit>().signIn(
-                                  emailController.text,
-                                  passwordController.text,
-                                );
-                          } else if (state is SignUpInitial) {
-                            context.read<LoginCubit>().signUp(
-                                  emailController.text,
-                                  passwordController.text,
-                                  usernameController.text,
-                                );
-                          }
-                        },
-                        child: Text(state is SignUpInitial
-                            ? 'Zarejestruj się'
-                            : 'Zaloguj się'),
-                      ),
-                    const SizedBox(height: 20),
-                    TextButton(
+                  const SizedBox(height: 20),
+                  if (state.isLoading)
+                    const CircularProgressIndicator()
+                  else
+                    ElevatedButton(
                       onPressed: () {
-                        context.read<LoginCubit>().toggleCreateAccount();
+                        if (state.isCreateAccount) {
+                          context.read<LoginCubit>().signUp(
+                                emailController.text,
+                                passwordController.text,
+                                usernameController.text,
+                              );
+                        } else {
+                          context.read<LoginCubit>().signIn(
+                                emailController.text,
+                                passwordController.text,
+                              );
+                        }
                       },
-                      child: Text(state is LoginInitial
-                          ? 'Utwórz konto'
-                          : 'Masz już konto?'),
+                      child: Text(state.isCreateAccount
+                          ? 'Zarejestruj się'
+                          : 'Zaloguj się'),
                     ),
-                  ],
-                ),
+                  TextButton(
+                    onPressed: () =>
+                        context.read<LoginCubit>().toggleCreateAccount(),
+                    child: Text(state.isCreateAccount
+                        ? 'Masz już konto?'
+                        : 'Utwórz konto'),
+                  ),
+                ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

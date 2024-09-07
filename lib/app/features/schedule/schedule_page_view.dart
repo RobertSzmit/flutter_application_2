@@ -3,7 +3,7 @@ import 'package:flutter_application_2/app/features/schedule/cubit/schedule_cubit
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SchedulePageView extends StatelessWidget {
-  const SchedulePageView({super.key});
+  const SchedulePageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +22,13 @@ class SchedulePageView extends StatelessWidget {
           return ListView.builder(
             itemCount: state.schedules.length,
             itemBuilder: (context, index) {
-              final document = state.schedules[index];
+              final schedule = state.schedules[index];
               return Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      document['date'] ?? '',
+                      schedule.date,
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
@@ -42,14 +42,14 @@ class SchedulePageView extends StatelessWidget {
                         Expanded(
                           flex: 2,
                           child: Text(
-                            document['home_team'] ?? '',
+                            schedule.homeTeam,
                             textAlign: TextAlign.right,
                           ),
                         ),
                         Expanded(
                           flex: 1,
                           child: Text(
-                            document['score'] ?? ' - ',
+                            schedule.score ?? ' - ',
                             textAlign: TextAlign.center,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -57,7 +57,7 @@ class SchedulePageView extends StatelessWidget {
                         Expanded(
                           flex: 2,
                           child: Text(
-                            document['away_team'] ?? '',
+                            schedule.awayTeam,
                             textAlign: TextAlign.left,
                           ),
                         ),
