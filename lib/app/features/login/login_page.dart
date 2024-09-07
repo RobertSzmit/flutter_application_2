@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/app/features/login/cubit/login_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application_2/app/features/login/cubit/login_cubit.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -31,9 +31,9 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(state is LoginInitial
-                        ? 'Zaloguj się'
-                        : 'Zarejestruj się'),
+                    Text(state is SignUpInitial
+                        ? 'Zarejestruj się'
+                        : 'Zaloguj się'),
                     const SizedBox(height: 20),
                     TextField(
                       controller: emailController,
@@ -44,7 +44,7 @@ class LoginPage extends StatelessWidget {
                       decoration: const InputDecoration(hintText: 'Hasło'),
                       obscureText: true,
                     ),
-                    if (state is! LoginInitial) ...[
+                    if (state is SignUpInitial) ...[
                       TextField(
                         controller: usernameController,
                         decoration: const InputDecoration(
@@ -62,7 +62,7 @@ class LoginPage extends StatelessWidget {
                                   emailController.text,
                                   passwordController.text,
                                 );
-                          } else {
+                          } else if (state is SignUpInitial) {
                             context.read<LoginCubit>().signUp(
                                   emailController.text,
                                   passwordController.text,
@@ -70,9 +70,9 @@ class LoginPage extends StatelessWidget {
                                 );
                           }
                         },
-                        child: Text(state is LoginInitial
-                            ? 'Zaloguj się'
-                            : 'Zarejestruj się'),
+                        child: Text(state is SignUpInitial
+                            ? 'Zarejestruj się'
+                            : 'Zaloguj się'),
                       ),
                     const SizedBox(height: 20),
                     TextButton(

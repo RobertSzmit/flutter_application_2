@@ -49,6 +49,10 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   void toggleCreateAccount() {
-    emit(LoginInitial());
+    if (state is LoginInitial) {
+      emit(SignUpInitial());
+    } else {
+      emit(LoginInitial());
+    }
   }
 }
