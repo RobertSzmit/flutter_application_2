@@ -59,10 +59,7 @@ class _ChatPageContentState extends State<_ChatPageContent> {
                   reverse: true,
                   itemCount: state.messages.length,
                   itemBuilder: (context, index) {
-                    final messageData = state.messages[index].data();
-                    final message = messageData['message'] as String;
-                    final username = messageData['username'] as String? ??
-                        'Nieznany użytkownik';
+                    final chatItem = state.messages[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 4, horizontal: 8),
@@ -73,12 +70,12 @@ class _ChatPageContentState extends State<_ChatPageContent> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                username,
+                                chatItem.username,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
-                              Text(message),
+                              Text(chatItem.message),
                             ],
                           ),
                         ),

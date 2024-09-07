@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_2/app/models/chat_item_model.dart';
 import 'package:meta/meta.dart';
 
 part 'chat_state.dart';
@@ -34,9 +35,19 @@ class ChatCubit extends Cubit<ChatState> {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((snapshot) {
+      final chatItems = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return ChatItem(
+          id: doc.id,
+          message: data['message'] ?? '',
+          userId: data['userId'] ?? '',
+          username: data['username'] ?? 'Nieznany użytkownik',
+          timestamp: data['timestamp'] ?? Timestamp.now(),
+        );
+      }).toList();
       emit(
         ChatState(
-          messages: snapshot.docs,
+          messages: chatItems,
           isLoading: false,
           errorMessage: '',
         ),
@@ -58,8 +69,10 @@ class ChatCubit extends Cubit<ChatState> {
       try {
         final user = _auth.currentUser;
         if (user != null) {
-          final userDoc = await _firestore.collection('users').doc(user.uid).get();
-          final username = userDoc.data()?['username'] as String? ?? 'Nieznany użytkownik';
+          final userDoc =
+              await _firestore.collection('users').doc(user.uid).get();
+          final username =
+              userDoc.data()?['username'] as String? ?? 'Nieznany użytkownik';
 
           await _firestore.collection('chat').add({
             'message': message,
