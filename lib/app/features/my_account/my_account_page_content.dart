@@ -3,7 +3,7 @@ import 'package:flutter_application_2/app/features/my_account/cubit/my_account_c
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyAccountPageContent extends StatelessWidget {
-  const MyAccountPageContent({super.key});
+  const MyAccountPageContent({super.key, String? email});
 
   @override
   Widget build(BuildContext context) {

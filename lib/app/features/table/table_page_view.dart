@@ -55,7 +55,7 @@ class TablePageView extends StatelessWidget {
                 return ListView.builder(
                   itemCount: state.teams.length,
                   itemBuilder: (context, index) {
-                    final document = state.teams[index];
+                    final team = state.teams[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 4.0, horizontal: 8.0),
@@ -63,22 +63,22 @@ class TablePageView extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 3,
-                            child: Text(document['team_name'] ?? ''),
+                            child: Text(team.teamName),
                           ),
                           Expanded(
                             flex: 1,
-                            child: Text(document['matches']?.toString() ?? '',
+                            child:
+                                Text(team.matches, textAlign: TextAlign.center),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(team.points.toString(),
                                 textAlign: TextAlign.center),
                           ),
                           Expanded(
                             flex: 1,
-                            child: Text(document['points']?.toString() ?? '',
-                                textAlign: TextAlign.center),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(document['goals']?.toString() ?? '',
-                                textAlign: TextAlign.center),
+                            child:
+                                Text(team.goals, textAlign: TextAlign.center),
                           ),
                         ],
                       ),
