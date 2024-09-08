@@ -14,8 +14,8 @@ class BannerItem {
   final String date;
   final String team1Name;
   final String team1Logo;
-  final int team1Score;
+  final String team1Score;
   final String team2Name;
   final String team2Logo;
-  final int team2Score;
+  final String team2Score;
 }

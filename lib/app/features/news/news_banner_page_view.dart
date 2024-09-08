@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/app/features/news/cubit/news_banner_cubit.dart';
-import 'package:flutter_application_2/app/features/news/news_page_view.dart';
+import 'package:flutter_application_2/app/features/news/cubit/news_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_2/app/features/news/banner_row_widget.dart';
 
@@ -24,9 +24,9 @@ class NewsBannerPageView extends StatelessWidget {
               }
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: state.banners.length,
+                itemCount: state.bannerItems.length,
                 itemBuilder: (context, index) {
-                  final banner = state.banners[index].data();
+                  final banner = state.bannerItems[index];
                   return IntrinsicWidth(
                     child: Card(
                       margin: const EdgeInsets.all(8),
@@ -37,9 +37,8 @@ class NewsBannerPageView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              banner['date'] ?? '',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              banner.date,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
                             BannerRowWidget(banner: banner, teamKey: 'team1'),
@@ -67,6 +66,63 @@ class NewsBannerPageView extends StatelessWidget {
         ),
         const NewsWidget(),
       ],
+    );
+  }
+}
+
+class NewsWidget extends StatelessWidget {
+  const NewsWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: BlocProvider(
+        create: (context) => NewsCubit()..start(),
+        child: BlocBuilder<NewsCubit, NewsState>(
+          builder: (context, state) {
+            if (state.errorMessage.isNotEmpty) {
+              return Center(
+                child: Text(
+                  'Coś poszło nie tak: ${state.errorMessage}',
+                ),
+              );
+            }
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final newsItems = state.newsItems;
+
+            return ListView.builder(
+              itemCount: newsItems.length,
+              itemBuilder: (context, index) {
+                final newsItem = newsItems[index];
+                return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Card(
+                    child: ListTile(
+                      leading: newsItem.imageUrl != null
+                          ? Image.network(
+                              newsItem.imageUrl!,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.error);
+                              },
+                            )
+                          : const SizedBox(width: 50, height: 50),
+                      title: Text(newsItem.title),
+                      subtitle: Text(newsItem.content),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }

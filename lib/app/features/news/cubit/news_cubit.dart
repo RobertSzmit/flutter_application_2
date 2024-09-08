@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
+import 'package:flutter_application_2/app/models/news_item_model.dart';
 
 part 'news_state.dart';
 
@@ -10,7 +10,7 @@ class NewsCubit extends Cubit<NewsState> {
   NewsCubit()
       : super(
           const NewsState(
-            documents: [],
+            newsItems: [],
             errorMessage: '',
             isLoading: false,
           ),
@@ -21,18 +21,24 @@ class NewsCubit extends Cubit<NewsState> {
   Future<void> start() async {
     emit(
       const NewsState(
-        documents: [],
+        newsItems: [],
         errorMessage: '',
-        isLoading: false,
+        isLoading: true,
       ),
     );
     _streamSubscription = FirebaseFirestore.instance
         .collection('news')
         .snapshots()
         .listen((data) {
+      final newsItems = data.docs.map((doc) => NewsItem(
+            id: doc.id,
+            title: doc['news_title'] as String? ?? '',
+            content: doc['news_content'] as String? ?? '',
+            imageUrl: doc['image_url'] as String?,
+          )).toList();
       emit(
         NewsState(
-          documents: data.docs,
+          newsItems: newsItems,
           isLoading: false,
           errorMessage: '',
         ),
@@ -41,7 +47,7 @@ class NewsCubit extends Cubit<NewsState> {
       ..onError((error) {
         emit(
           NewsState(
-            documents: const [],
+            newsItems: const [],
             isLoading: false,
             errorMessage: error.toString(),
           ),
