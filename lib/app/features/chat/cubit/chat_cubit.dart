@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_2/app/models/chat_item_model.dart';
+import 'package:flutter_application_2/app/repositories/chat_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  ChatCubit()
+  ChatCubit(this._chatRepository)
       : super(
           const ChatState(
             messages: [],
@@ -17,9 +16,9 @@ class ChatCubit extends Cubit<ChatState> {
           ),
         );
 
+  final ChatRepository _chatRepository;
+
   StreamSubscription? _streamSubscription;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> start() async {
     emit(
@@ -30,21 +29,8 @@ class ChatCubit extends Cubit<ChatState> {
       ),
     );
 
-    _streamSubscription = _firestore
-        .collection('chat')
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .listen((snapshot) {
-      final chatItems = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return ChatItem(
-          id: doc.id,
-          message: data['message'] ?? '',
-          userId: data['userId'] ?? '',
-          username: data['username'] ?? 'Nieznany użytkownik',
-          timestamp: data['timestamp'] ?? Timestamp.now(),
-        );
-      }).toList();
+    _streamSubscription =
+        _chatRepository.streamChatMessages().listen((chatItems) {
       emit(
         ChatState(
           messages: chatItems,
@@ -53,34 +39,21 @@ class ChatCubit extends Cubit<ChatState> {
         ),
       );
     })
-      ..onError((error) {
-        emit(
-          ChatState(
-            messages: [],
-            isLoading: false,
-            errorMessage: error.toString(),
-          ),
-        );
-      });
+          ..onError((error) {
+            emit(
+              ChatState(
+                messages: const [],
+                isLoading: false,
+                errorMessage: error.toString(),
+              ),
+            );
+          });
   }
 
   Future<void> sendMessage(String message) async {
     if (message.isNotEmpty) {
       try {
-        final user = _auth.currentUser;
-        if (user != null) {
-          final userDoc =
-              await _firestore.collection('users').doc(user.uid).get();
-          final username =
-              userDoc.data()?['username'] as String? ?? 'Nieznany użytkownik';
-
-          await _firestore.collection('chat').add({
-            'message': message,
-            'timestamp': FieldValue.serverTimestamp(),
-            'userId': user.uid,
-            'username': username,
-          });
-        }
+        await _chatRepository.sendMessage(message);
       } catch (e) {
         emit(
           ChatState(
