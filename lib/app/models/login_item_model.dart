@@ -1,5 +1,5 @@
-class UserItem {
-  UserItem({
+class LoginItem {
+  LoginItem({
     required this.id,
     required this.email,
     required this.username,

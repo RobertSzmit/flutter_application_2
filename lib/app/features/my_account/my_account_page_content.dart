@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/app/features/my_account/cubit/my_account_cubit.dart';
+import 'package:flutter_application_2/app/repositories/my_account_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyAccountPageContent extends StatelessWidget {
-  const MyAccountPageContent({Key? key}) : super(key: key);
+  const MyAccountPageContent({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MyAccountCubit()..loadUserData(),
+      create: (_) => MyAccountCubit(MyAccountRepository())..loadUserData(),
       child: BlocBuilder<MyAccountCubit, MyAccountState>(
         builder: (context, state) {
           if (state.isLoading) {

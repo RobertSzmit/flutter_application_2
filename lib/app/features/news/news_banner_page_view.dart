@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/app/features/news/cubit/news_banner_cubit.dart';
 import 'package:flutter_application_2/app/features/news/cubit/news_cubit.dart';
+import 'package:flutter_application_2/app/repositories/news_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_2/app/features/news/banner_row_widget.dart';
 
@@ -38,7 +39,8 @@ class NewsBannerPageView extends StatelessWidget {
                           children: [
                             Text(
                               banner.date,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
                             BannerRowWidget(banner: banner, teamKey: 'team1'),
@@ -79,7 +81,7 @@ class NewsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: BlocProvider(
-        create: (context) => NewsCubit()..start(),
+        create: (context) => NewsCubit(NewsRepository())..start(),
         child: BlocBuilder<NewsCubit, NewsState>(
           builder: (context, state) {
             if (state.errorMessage.isNotEmpty) {

@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/app/repositories/login_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_2/app/features/login/cubit/login_cubit.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginCubit(),
+      create: (context) => LoginCubit(LoginRepository()),
       child: const LoginPageContent(),
     );
   }
 }
 
 class LoginPageContent extends StatelessWidget {
-  const LoginPageContent({Key? key}) : super(key: key);
+  const LoginPageContent({super.key});
 
   @override
   Widget build(BuildContext context) {

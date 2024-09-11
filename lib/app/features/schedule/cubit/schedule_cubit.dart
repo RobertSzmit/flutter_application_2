@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter_application_2/app/models/schedule_item_model.dart';
+import 'package:flutter_application_2/app/repositories/schedule_repository.dart';
 
 part 'schedule_state.dart';
 
 class ScheduleCubit extends Cubit<ScheduleState> {
-  ScheduleCubit()
+  final ScheduleRepository _repository;
+
+  ScheduleCubit(this._repository)
       : super(
           const ScheduleState(
             schedules: [],
@@ -27,26 +29,17 @@ class ScheduleCubit extends Cubit<ScheduleState> {
       ),
     );
 
-    _streamSubscription = FirebaseFirestore.instance
-        .collection('schedule')
-        .snapshots()
-        .listen((snapshot) {
-      final schedules = snapshot.docs.map((doc) => ScheduleItem(
-            id: doc.id,
-            date: doc['date'] ?? '',
-            homeTeam: doc['home_team'] ?? '',
-            awayTeam: doc['away_team'] ?? '',
-            score: doc['score'],
-          )).toList();
-      emit(
-        ScheduleState(
-          schedules: schedules,
-          isLoading: false,
-          errorMessage: '',
-        ),
-      );
-    })
-      ..onError((error) {
+    _streamSubscription = _repository.streamScheduleItems().listen(
+      (schedules) {
+        emit(
+          ScheduleState(
+            schedules: schedules,
+            isLoading: false,
+            errorMessage: '',
+          ),
+        );
+      },
+      onError: (error) {
         emit(
           ScheduleState(
             schedules: const [],
@@ -54,7 +47,8 @@ class ScheduleCubit extends Cubit<ScheduleState> {
             errorMessage: error.toString(),
           ),
         );
-      });
+      },
+    );
   }
 
   @override
