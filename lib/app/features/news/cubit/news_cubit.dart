@@ -10,44 +10,37 @@ class NewsCubit extends Cubit<NewsState> {
   final NewsRepository _repository;
 
   NewsCubit(this._repository)
-      : super(
-          const NewsState(
-            newsItems: [],
-            errorMessage: '',
-            isLoading: false,
-          ),
-        );
+      : super(const NewsState(newsItems: [], isLoading: false, errorMessage: ''));
 
   StreamSubscription? _streamSubscription;
 
   Future<void> start() async {
-    emit(
-      const NewsState(
-        newsItems: [],
-        errorMessage: '',
-        isLoading: true,
-      ),
-    );
+    emit(state.copyWith(isLoading: true));
     _streamSubscription = _repository.streamNewsItems().listen(
       (newsItems) {
-        emit(
-          NewsState(
-            newsItems: newsItems,
-            isLoading: false,
-            errorMessage: '',
-          ),
-        );
+        emit(state.copyWith(newsItems: newsItems, isLoading: false));
       },
       onError: (error) {
-        emit(
-          NewsState(
-            newsItems: const [],
-            isLoading: false,
-            errorMessage: error.toString(),
-          ),
-        );
+        emit(state.copyWith(errorMessage: error.toString(), isLoading: false));
       },
     );
+  }
+
+  Future<void> loadNewsDetails(String newsId) async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      final newsItem = await _repository.getNewsDetails(newsId);
+      final updatedItems = List<NewsItem>.from(state.newsItems);
+      final index = updatedItems.indexWhere((item) => item.id == newsId);
+      if (index != -1) {
+        updatedItems[index] = newsItem;
+      } else {
+        updatedItems.add(newsItem);
+      }
+      emit(state.copyWith(newsItems: updatedItems, isLoading: false));
+    } catch (error) {
+      emit(state.copyWith(errorMessage: error.toString(), isLoading: false));
+    }
   }
 
   @override

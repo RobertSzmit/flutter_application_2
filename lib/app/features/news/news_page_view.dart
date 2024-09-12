@@ -36,7 +36,11 @@ class NewsPageView extends StatelessWidget {
                           )
                         : const SizedBox(width: 50, height: 50),
                     title: Text(newsItem.title),
-                    subtitle: Text(newsItem.content),
+                    subtitle: Text(
+                      newsItem.content,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),

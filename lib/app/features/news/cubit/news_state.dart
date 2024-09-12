@@ -11,4 +11,16 @@ class NewsState {
     required this.isLoading,
     required this.errorMessage,
   });
+
+  NewsState copyWith({
+    List<NewsItem>? newsItems,
+    bool? isLoading,
+    String? errorMessage,
+  }) {
+    return NewsState(
+      newsItems: newsItems ?? this.newsItems,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 }
