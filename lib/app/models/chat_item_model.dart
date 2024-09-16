@@ -1,32 +1,20 @@
-import 'package:flutter_application_2/app/features/chat/timestamp_converter.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_2/app/features/chat/timestamp_converter.dart';
 
+part 'chat_item_model.freezed.dart';
 part 'chat_item_model.g.dart';
 
-@JsonSerializable()
-class ChatItem {
-  ChatItem({
-    required this.id,
-    required this.message,
-    required this.userId,
-    required this.username,
-    required this.timestamp,
-  });
-
-  final String id;
-
-  final String message;
-
-  final String userId;
-
-  final String username;
-
-  @TimestampConverter()
-  final Timestamp timestamp;
+@freezed
+class ChatItem with _$ChatItem {
+  const factory ChatItem({
+    required String id,
+    required String message,
+    required String userId,
+    required String username,
+    @TimestampConverter() required Timestamp timestamp,
+  }) = _ChatItem;
 
   factory ChatItem.fromJson(Map<String, dynamic> json) =>
       _$ChatItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ChatItemToJson(this);
 }

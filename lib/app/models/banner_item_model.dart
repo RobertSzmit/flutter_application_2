@@ -1,31 +1,22 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'banner_item_model.freezed.dart';
 part 'banner_item_model.g.dart';
 
-@JsonSerializable()
-class BannerItem {
-  BannerItem({
-    required this.id,
-    required this.date,
-    required this.team1Name,
-    required this.team1Logo,
-    required this.team1Score,
-    required this.team2Name,
-    required this.team2Logo,
-    required this.team2Score,
-  });
-
-  final String id;
-  final String date;
-  final String team1Name;
-  final String team1Logo;
-  final String team1Score;
-  final String team2Name;
-  final String team2Logo;
-  final String team2Score;
+@freezed
+class BannerItem with _$BannerItem {
+  const factory BannerItem({
+    required String id,
+    required String date,
+    required String team1Name,
+    required String team1Logo,
+    required String team1Score,
+    required String team2Name,
+    required String team2Logo,
+    required String team2Score,
+  }) = _BannerItem;
 
   factory BannerItem.fromJson(Map<String, dynamic> json) =>
       _$BannerItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BannerItemToJson(this);
 }
+

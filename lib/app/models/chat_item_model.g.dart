@@ -6,7 +6,8 @@ part of 'chat_item_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ChatItem _$ChatItemFromJson(Map<String, dynamic> json) => ChatItem(
+_$ChatItemImpl _$$ChatItemImplFromJson(Map<String, dynamic> json) =>
+    _$ChatItemImpl(
       id: json['id'] as String,
       message: json['message'] as String,
       userId: json['userId'] as String,
@@ -15,7 +16,8 @@ ChatItem _$ChatItemFromJson(Map<String, dynamic> json) => ChatItem(
           const TimestampConverter().fromJson(json['timestamp'] as Timestamp),
     );
 
-Map<String, dynamic> _$ChatItemToJson(ChatItem instance) => <String, dynamic>{
+Map<String, dynamic> _$$ChatItemImplToJson(_$ChatItemImpl instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'message': instance.message,
       'userId': instance.userId,

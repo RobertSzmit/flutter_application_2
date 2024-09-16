@@ -6,7 +6,8 @@ part of 'schedule_item_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ScheduleItem _$ScheduleItemFromJson(Map<String, dynamic> json) => ScheduleItem(
+_$ScheduleItemImpl _$$ScheduleItemImplFromJson(Map<String, dynamic> json) =>
+    _$ScheduleItemImpl(
       id: json['id'] as String,
       date: json['date'] as String,
       homeTeam: json['homeTeam'] as String,
@@ -14,7 +15,7 @@ ScheduleItem _$ScheduleItemFromJson(Map<String, dynamic> json) => ScheduleItem(
       score: json['score'] as String?,
     );
 
-Map<String, dynamic> _$ScheduleItemToJson(ScheduleItem instance) =>
+Map<String, dynamic> _$$ScheduleItemImplToJson(_$ScheduleItemImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'date': instance.date,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter_application_2/app/models/user_item_model.dart';
 import 'package:flutter_application_2/app/repositories/my_account_repository.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'my_account_state.dart';
 

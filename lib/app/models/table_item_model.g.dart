@@ -6,7 +6,8 @@ part of 'table_item_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TableItem _$TableItemFromJson(Map<String, dynamic> json) => TableItem(
+_$TableItemImpl _$$TableItemImplFromJson(Map<String, dynamic> json) =>
+    _$TableItemImpl(
       id: json['id'] as String,
       teamName: json['teamName'] as String,
       matches: json['matches'] as String,
@@ -14,7 +15,8 @@ TableItem _$TableItemFromJson(Map<String, dynamic> json) => TableItem(
       goals: json['goals'] as String,
     );
 
-Map<String, dynamic> _$TableItemToJson(TableItem instance) => <String, dynamic>{
+Map<String, dynamic> _$$TableItemImplToJson(_$TableItemImpl instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'teamName': instance.teamName,
       'matches': instance.matches,

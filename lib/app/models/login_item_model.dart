@@ -1,21 +1,16 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'login_item_model.freezed.dart';
 part 'login_item_model.g.dart';
 
-@JsonSerializable()
-class LoginItem {
-  LoginItem({
-    required this.id,
-    required this.email,
-    required this.username,
-  });
-
-  final String id;
-  final String email;
-  final String username;
+@freezed
+class LoginItem with _$LoginItem {
+  const factory LoginItem({
+    required String id,
+    required String email,
+    required String username,
+  }) = _LoginItem;
 
   factory LoginItem.fromJson(Map<String, dynamic> json) =>
       _$LoginItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$LoginItemToJson(this);
 }
