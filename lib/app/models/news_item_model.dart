@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'news_item_model.g.dart';
+
+@JsonSerializable()
 class NewsItem {
   final String id;
   final String title;
@@ -12,4 +17,8 @@ class NewsItem {
     this.imageUrl,
     this.details,
   });
+
+  factory NewsItem.fromJson(Map<String, dynamic> json) => _$NewsItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NewsItemToJson(this);
 }

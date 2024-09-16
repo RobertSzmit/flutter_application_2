@@ -1,15 +1,24 @@
-class TableItem {
-  TableItem(
-      // konstruktory do poniższych
-      {required this.id,
-      required this.teamName,
-      required this.matches,
-      required this.points,
-      required this.goals});
+import 'package:json_annotation/json_annotation.dart';
 
-  final String id; // parametry z table_page_view
+part 'table_item_model.g.dart';
+
+@JsonSerializable()
+class TableItem {
+  TableItem({
+    required this.id,
+    required this.teamName,
+    required this.matches,
+    required this.points,
+    required this.goals,
+  });
+
+  final String id;
   final String teamName;
   final String matches;
   final int points;
   final String goals;
+
+  factory TableItem.fromJson(Map<String, dynamic> json) => _$TableItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TableItemToJson(this);
 }

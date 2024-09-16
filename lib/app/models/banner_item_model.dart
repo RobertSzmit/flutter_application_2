@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'banner_item_model.g.dart';
+
+@JsonSerializable()
 class BannerItem {
   BannerItem({
     required this.id,
@@ -18,4 +23,9 @@ class BannerItem {
   final String team2Name;
   final String team2Logo;
   final String team2Score;
+
+  factory BannerItem.fromJson(Map<String, dynamic> json) =>
+      _$BannerItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BannerItemToJson(this);
 }
