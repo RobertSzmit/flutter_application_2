@@ -1,14 +1,13 @@
-part of 'table_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_application_2/app/models/table_item_model.dart';
 
-@immutable
-class TableState {
-  final List<TableItem> teams;
-  final bool isLoading;
-  final String errorMessage;
+part 'table_state.freezed.dart';
 
-  const TableState({
-    required this.teams,
-    required this.isLoading,
-    required this.errorMessage,
-  });
+@freezed
+class TableState with _$TableState {
+  const factory TableState({
+    @Default([]) List<TableItem> teams,
+    @Default(false) bool isLoading,
+    @Default('') String errorMessage,
+  }) = _TableState;
 }

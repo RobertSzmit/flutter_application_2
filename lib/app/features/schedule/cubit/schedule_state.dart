@@ -1,14 +1,13 @@
-part of 'schedule_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_application_2/app/models/schedule_item_model.dart';
 
-@immutable
-class ScheduleState {
-  final List<ScheduleItem> schedules;
-  final bool isLoading;
-  final String errorMessage;
+part 'schedule_state.freezed.dart';
 
-  const ScheduleState({
-    required this.schedules,
-    required this.isLoading,
-    required this.errorMessage,
-  });
+@freezed
+class ScheduleState with _$ScheduleState {
+  const factory ScheduleState({
+    @Default([]) List<ScheduleItem> schedules,
+    @Default(false) bool isLoading,
+    @Default('') String errorMessage,
+  }) = _ScheduleState;
 }

@@ -1,30 +1,14 @@
-part of 'login_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_application_2/app/models/login_item_model.dart';
 
-@immutable
-class LoginState {
-  final LoginItem? user;
-  final bool isLoading;
-  final String errorMessage;
-  final bool isCreateAccount;
+part 'login_state.freezed.dart';
 
-  const LoginState({
-    this.user,
-    required this.isLoading,
-    required this.errorMessage,
-    required this.isCreateAccount,
-  });
-
-  LoginState copyWith({
+@freezed
+class LoginState with _$LoginState {
+  const factory LoginState({
     LoginItem? user,
-    bool? isLoading,
-    String? errorMessage,
-    bool? isCreateAccount,
-  }) {
-    return LoginState(
-      user: user ?? this.user,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage ?? this.errorMessage,
-      isCreateAccount: isCreateAccount ?? this.isCreateAccount,
-    );
-  }
+    @Default(false) bool isLoading,
+    @Default('') String errorMessage,
+    @Default(false) bool isCreateAccount,
+  }) = _LoginState;
 }

@@ -1,14 +1,13 @@
-part of 'news_banner_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_application_2/app/models/banner_item_model.dart';
 
-@immutable
-class NewsBannerState {
-  final List<BannerItem> bannerItems;
-  final bool isLoading;
-  final String errorMessage;
+part 'news_banner_state.freezed.dart';
 
-  const NewsBannerState({
-    required this.bannerItems,
-    required this.isLoading,
-    required this.errorMessage,
-  });
+@freezed
+class NewsBannerState with _$NewsBannerState {
+  const factory NewsBannerState({
+    @Default([]) List<BannerItem> bannerItems,
+    @Default(false) bool isLoading,
+    @Default('') String errorMessage,
+  }) = _NewsBannerState;
 }

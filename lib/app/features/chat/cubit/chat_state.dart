@@ -1,14 +1,13 @@
-part of 'chat_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_application_2/app/models/chat_item_model.dart';
 
-@immutable
-class ChatState {
-  final List<ChatItem> messages;
-  final bool isLoading;
-  final String errorMessage;
+part 'chat_state.freezed.dart';
 
-  const ChatState({
-    required this.messages,
-    required this.isLoading,
-    required this.errorMessage,
-  });
+@freezed
+class ChatState with _$ChatState {
+  const factory ChatState({
+    @Default([]) List<ChatItem> messages,
+    @Default(false) bool isLoading,
+    @Default('') String errorMessage,
+  }) = _ChatState;
 }

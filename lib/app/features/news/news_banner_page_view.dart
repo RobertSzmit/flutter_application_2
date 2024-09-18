@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/app/features/news/cubit/news_banner_cubit.dart';
+import 'package:flutter_application_2/app/features/news/cubit/news_banner_state.dart';
 import 'package:flutter_application_2/app/features/news/cubit/news_cubit.dart';
+import 'package:flutter_application_2/app/features/news/cubit/news_state.dart';
 import 'package:flutter_application_2/app/features/news/news_details_page.dart';
 import 'package:flutter_application_2/app/repositories/news_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

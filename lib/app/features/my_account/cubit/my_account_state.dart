@@ -1,14 +1,13 @@
-part of 'my_account_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_application_2/app/models/user_item_model.dart';
 
-@immutable
-class MyAccountState {
-  final UserItem? userItem;
-  final bool isLoading;
-  final String errorMessage;
+part 'my_account_state.freezed.dart';
 
-  const MyAccountState({
-    this.userItem,
-    required this.isLoading,
-    required this.errorMessage,
-  });
+@freezed
+class MyAccountState with _$MyAccountState {
+  const factory MyAccountState({
+    UserItem? userItem,
+    @Default(false) bool isLoading,
+    @Default('') String errorMessage,
+  }) = _MyAccountState;
 }

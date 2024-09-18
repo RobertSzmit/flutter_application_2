@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/app/features/news/cubit/news_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_2/app/features/news/cubit/news_cubit.dart';
 import 'package:flutter_application_2/app/repositories/news_repository.dart';
@@ -23,7 +24,7 @@ class NewsDetailsPage extends StatelessWidget {
           
           final newsItem = state.newsItems.firstWhere(
             (item) => item.id == newsId,
-            orElse: () => NewsItem(
+            orElse: () => const NewsItem(
               id: '',
               title: '',
               content: '',
