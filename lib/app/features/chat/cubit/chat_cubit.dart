@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_2/app/models/chat_item_model.dart';
 import 'package:flutter_application_2/app/repositories/chat_repository.dart';
 
 import 'chat_state.dart';

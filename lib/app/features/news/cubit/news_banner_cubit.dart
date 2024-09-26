@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_2/app/models/banner_item_model.dart';
 import 'package:flutter_application_2/app/repositories/news_repository.dart';
 
 import 'news_banner_state.dart';

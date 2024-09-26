@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_2/app/models/table_item_model.dart';
 import 'package:flutter_application_2/app/repositories/table_repository.dart';
 
 import 'table_state.dart';

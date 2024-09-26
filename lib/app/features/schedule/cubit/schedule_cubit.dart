@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_2/app/models/schedule_item_model.dart';
 import 'package:flutter_application_2/app/repositories/schedule_repository.dart';
 
 import 'schedule_state.dart';

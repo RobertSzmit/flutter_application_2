@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_2/app/models/login_item_model.dart';
 import 'package:flutter_application_2/app/repositories/login_repository.dart';
 
 import 'login_state.dart';
