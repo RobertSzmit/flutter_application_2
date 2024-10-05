@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_2/app/models/news_item_model.dart';
 import 'package:flutter_application_2/app/repositories/news_repository.dart';
+import 'package:flutter_application_2/app/services/notification_service.dart';
 
 import 'news_state.dart';
 
@@ -22,6 +23,8 @@ class NewsCubit extends Cubit<NewsState> {
         emit(state.copyWith(errorMessage: error.toString(), isLoading: false));
       },
     );
+
+    await NotificationService.subscribeToNewsTopic();
   }
 
   Future<void> loadNewsDetails(String newsId) async {
